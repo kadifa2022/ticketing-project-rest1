@@ -36,20 +36,20 @@ public class UserController {
 
     }
     @PostMapping
-    @RolesAllowed({"Admin"})
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO user){
         userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("User is successfully created", HttpStatus.CREATED));
     }
     @PutMapping
-    @RolesAllowed({"Admin"})
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> updateUsers(@RequestBody UserDTO user){
         userService.update(user);
         return ResponseEntity.ok((new ResponseWrapper("User is Successfully updated", HttpStatus.OK)));
     }
 
     @DeleteMapping("/{username}")
-    @RolesAllowed({"Admin"})
+    @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String userName){
             userService.delete(userName);
             return ResponseEntity.ok(new ResponseWrapper("User is successfully deleted", HttpStatus.OK));
