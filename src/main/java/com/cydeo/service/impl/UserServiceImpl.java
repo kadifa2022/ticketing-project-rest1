@@ -1,9 +1,11 @@
 package com.cydeo.service.impl;
 
+import com.cydeo.annotation.DefaultExceptionMessage;
 import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.TaskDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.User;
+import com.cydeo.exception.TicketingProjectException;
 import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.UserRepository;
 import com.cydeo.service.ProjectService;
@@ -22,12 +24,14 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final ProjectService projectService;
     private final TaskService taskService;
+    private final KeycloakServiceImpl keycloakService;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, @Lazy ProjectService projectService, @Lazy TaskService taskService) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, @Lazy ProjectService projectService, @Lazy TaskService taskService, KeycloakServiceImpl keycloakService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.projectService = projectService;
         this.taskService = taskService;
+        this.keycloakService = keycloakService;
     }
 
     @Override
@@ -50,6 +54,7 @@ public class UserServiceImpl implements UserService {
         User obj = userMapper.convertToEntity(user);
 
         userRepository.save(obj);
+        keycloakService.userCreate(user);
 
     }
 
@@ -76,6 +81,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @DefaultExceptionMessage(defaultMessage = "Failed to delete user")
     public void delete(String username) {
 
         User user = userRepository.findByUserNameAndIsDeleted(username, false);
@@ -84,6 +90,8 @@ public class UserServiceImpl implements UserService {
             user.setIsDeleted(true);
             user.setUserName(user.getUserName() + "-" + user.getId());  // harold@manager.com-2
             userRepository.save(user);
+        }else{
+          //  throw new TicketingProjectException("User can not be deleted");
         }
 
     }
