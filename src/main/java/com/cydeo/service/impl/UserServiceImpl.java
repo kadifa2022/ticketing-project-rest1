@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @DefaultExceptionMessage(defaultMessage = "Failed to delete user")
-    public void delete(String username) {
+    public void delete(String username) throws TicketingProjectException{
 
         User user = userRepository.findByUserNameAndIsDeleted(username, false);
 
@@ -91,10 +91,11 @@ public class UserServiceImpl implements UserService {
             user.setUserName(user.getUserName() + "-" + user.getId());  // harold@manager.com-2
             userRepository.save(user);
         }else{
-          //  throw new TicketingProjectException("User can not be deleted");
+            throw new TicketingProjectException("User can not be deleted");
         }
 
     }
+
 
     @Override
     public List<UserDTO> listAllByRole(String role) {
