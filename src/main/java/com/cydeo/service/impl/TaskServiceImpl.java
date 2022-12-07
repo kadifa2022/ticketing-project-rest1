@@ -138,6 +138,7 @@ public class TaskServiceImpl implements TaskService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
         String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
+
         UserDTO loggedInUser=userService.findByUserName(username);
 
         List<Task> tasks = taskRepository.
