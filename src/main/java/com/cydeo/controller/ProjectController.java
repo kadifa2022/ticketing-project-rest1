@@ -46,7 +46,7 @@ public class ProjectController {
     @Operation(summary = "Create project ")
     public ResponseEntity<ResponseWrapper> createProject(@RequestBody ProjectDTO project){
         projectService.save(project);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("project is created", HttpStatus.CREATED));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("Project is successfully created", HttpStatus.CREATED));
 
     }
     @PutMapping
