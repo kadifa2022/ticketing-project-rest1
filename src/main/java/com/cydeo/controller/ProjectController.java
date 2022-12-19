@@ -62,7 +62,7 @@ public class ProjectController {
     @Operation(summary = "Delete project")
     public ResponseEntity<ResponseWrapper> deleteProject(@PathVariable("projectcode")String projectcode){
         projectService.delete(projectcode);
-        return ResponseEntity.ok(new ResponseWrapper("Project are successfully deleted", HttpStatus.OK));
+        return ResponseEntity.ok(new ResponseWrapper("Project is successfully deleted", HttpStatus.OK));
     }
     @GetMapping("/manager/project-status")
     @RolesAllowed("Manager")
