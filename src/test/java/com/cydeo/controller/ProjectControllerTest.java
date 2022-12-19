@@ -42,7 +42,8 @@ class ProjectControllerTest {
     @BeforeAll
     static void setUp(){
 
-        token = "Bearer " + "getToken()";
+        token = "Bearer " + getToken();
+       // token = "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjMEl6ZkNaR2lGVlM1cFdyTExaY2JLWU94Njl2VlVjYWpvTGdKZ3RwX2FnIn0.eyJleHAiOjE2NzE0NjMzMjcsImlhdCI6MTY3MTQ2MzAyNywianRpIjoiOTJiMGRhOTMtNWVhMi00MTI2LWFlNWQtYjUxZTc3ZWQzYWE4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL2N5ZGVvLWRldiIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiIwNmY3NDE2Ny1iMmU4LTQzMzctOTg2NC00NTA3Zjk5YjkwMmUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0aWNrZXRpbmctYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjdlMjUxMWE0LTFkZjctNGU3ZS04OWIxLTZkNzk3NjBmNjYwNCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo4MDgxIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtY3lkZW8tZGV2IiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJ0aWNrZXRpbmctYXBwIjp7InJvbGVzIjpbIk1hbmFnZXIiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiI3ZTI1MTFhNC0xZGY3LTRlN2UtODliMS02ZDc5NzYwZjY2MDQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicHJlZmVycmVkX3VzZXJuYW1lIjoib3p6eSJ9.Or41vThLeCjtQR3HapXklmSiIJN3524-jEiooUqyR7W-FIbNXlKGkyPb5w_R64f3PeQLPVsccudopg-oT6sUSizSUZ6zKrc0cUGdUMILNq5s9WgTNBJ2Z8iRgXlchI6tdLr0EOUleawBysCi7KyASpLhIIoa6_LV5suH_Hu__7eVUMwWvCq3fkDfh0Vos28Yz7EyHnex-zDcELdtgIT0RG3Vow9yQ2dzSy1Zz48KYjsbReA73mEjZVqoP7F-PbIpkqapjUBU6YNbTZkhjDewC1IeHS848byjN_LDv_YCmYT-k3c79-k_kXyhwBq8HvR1Lw2VcH1u36KEksEXPrHM0g";
 
         manager = new UserDTO(2L,
                 "",
@@ -80,12 +81,13 @@ class ProjectControllerTest {
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/project")
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
+
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data[0].projectCode").exists())
-                .andExpect(jsonPath("$.data[0].assignManager.userName").exists())
-                .andExpect(jsonPath("$.data[0].assignManager.userName").isNotEmpty())
-                .andExpect(jsonPath("$.data[0].assignManager.userName").isString())
-                .andExpect(jsonPath("$.data[0].assignManager.userName").value("ozzy"));
+                .andExpect(jsonPath("$.data[0].assignedManager.userName").exists())
+                .andExpect(jsonPath("$.data[0].assignedManager.userName").isNotEmpty())
+                .andExpect(jsonPath("$.data[0].assignedManager.userName").isString())
+                .andExpect(jsonPath("$.data[0].assignedManager.userName").value("ozzy"));
 
     }
 
@@ -111,14 +113,14 @@ class ProjectControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(toJsonString(project)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Project is successfully updated"));
+                .andExpect(jsonPath("$.message").value("Projects is successfully updated"));
 
     }
 
     @Test
     void givenToken_deleteProject() throws Exception{
 
-        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/project" + project.getProjectCode())
+        mvc.perform(MockMvcRequestBuilders.delete("/api/v1/project/" + project.getProjectCode())
                 .header("Authorization", token)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
