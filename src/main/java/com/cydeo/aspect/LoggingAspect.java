@@ -1,6 +1,6 @@
 package com.cydeo.aspect;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;//coming from lombok
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
@@ -32,7 +32,7 @@ public class LoggingAspect {
     @Before("anyProjectAndTaskControllerPC()")
     public void  beforeAnyProjectAndTaskControllerAdvice(JoinPoint joinPoint){
 
-        log.info("Before -> Methode: {}, User:{}"
+        log.info("Before -> Method: {}, User:{}"
                 , joinPoint.getSignature().toShortString()
                 , getUsername());
 
