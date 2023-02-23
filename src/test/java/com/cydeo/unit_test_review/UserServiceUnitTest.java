@@ -1,6 +1,8 @@
 package com.cydeo.unit_test_review;
 
+import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.RoleDTO;
+import com.cydeo.dto.TaskDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.Role;
 import com.cydeo.entity.User;
@@ -14,6 +16,8 @@ import com.cydeo.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -175,6 +179,78 @@ public class UserServiceUnitTest {
 
 
     }
+
+    @Test
+    void should_delete_employee() throws TicketingProjectException {
+        User employeeUser = getUser("Employee");
+
+        when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(employeeUser);
+        when(userRepository.save(any())).thenReturn(employeeUser);
+        when(taskService.listAllNonCompletedByAssignedEmployee(any())).thenReturn(new ArrayList<>());
+        userService.delete(userDTO.getUserName());
+
+        assertTrue(employeeUser.getIsDeleted());
+        assertNotEquals("user3", employeeUser.getUserName());
+
+
+    }
+
+    @Test
+    void should_throw_exception_when_delete_manager() throws TicketingProjectException {
+        User managerUser = getUser("Manager");
+
+        when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(managerUser);
+
+        when(projectService.listAllNonCompletedByAssignedManager(any())).thenReturn(List.of(new ProjectDTO(), new ProjectDTO()));
+
+        Throwable throwable = catchThrowable(()->userService.delete(userDTO.getUserName()));
+
+        assertInstanceOf(TicketingProjectException.class, throwable);
+        assertEquals("User can not be deleted", throwable.getMessage());
+
+        verify(userMapper, atLeastOnce()).convertToDto(any());
+
+
+    }
+    @ParameterizedTest
+    @ValueSource(strings = {"Manager", "Employee"})
+    void should_delete_user(String value) throws TicketingProjectException {
+        User testUser = getUser(value);
+        when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(testUser);
+        when(userRepository.save(any())).thenReturn(testUser);
+        lenient().when(projectService.listAllNonCompletedByAssignedManager(any())).thenReturn(new ArrayList<>());
+        lenient().when(taskService.listAllNonCompletedByAssignedEmployee(any())).thenReturn(new ArrayList<>());
+         userService.delete(userDTO.getUserName());
+
+         assertTrue(testUser.getIsDeleted());
+         assertNotEquals("user3", testUser.getUserName());
+    }
+
+
+
+
+    @Test
+    void should_throw_exception_when_delete_employee() throws TicketingProjectException {
+        User employeeUser = getUser("Employee");
+
+        when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(employeeUser);
+
+        when(taskService.listAllNonCompletedByAssignedEmployee(any())).thenReturn(List.of(new TaskDTO(), new TaskDTO()));
+
+        Throwable throwable = catchThrowable(()->userService.delete(userDTO.getUserName()));
+
+        assertInstanceOf(TicketingProjectException.class, throwable);
+        assertEquals("User can not be deleted", throwable.getMessage());
+
+        verify(userMapper, atLeastOnce()).convertToDto(any());
+
+
+    }
+
+
+
+
+
     private User getUser(String role){
         User user3 = new User();
         user3.setEnabled(false);
