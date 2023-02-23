@@ -22,7 +22,7 @@ import static org.keycloak.admin.client.CreatedResponseUtil.getCreatedId;
 public class  KeycloakServiceImpl implements KeycloakService {
 
 
-    private final KeycloakProperties keycloakProperties;
+    private final KeycloakProperties keycloakProperties;// using variables
 
     public KeycloakServiceImpl(KeycloakProperties keycloakProperties) {
         this.keycloakProperties = keycloakProperties;
@@ -33,7 +33,7 @@ public class  KeycloakServiceImpl implements KeycloakService {
 
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
-        credential.setTemporary(false);
+        credential.setTemporary(false);//if is true we need to reset password
         credential.setValue(userDTO.getPassWord());
 
         UserRepresentation keycloakUser = new UserRepresentation();
@@ -46,9 +46,9 @@ public class  KeycloakServiceImpl implements KeycloakService {
         keycloakUser.setEnabled(true);
 
 
-        Keycloak keycloak = getKeycloakInstance();
+        Keycloak keycloak = getKeycloakInstance();// any action in keycloak need to open instance first
 
-        RealmResource realmResource = keycloak.realm(keycloakProperties.getRealm());
+        RealmResource realmResource = keycloak.realm(keycloakProperties.getRealm());//realm Cydeo-dev field
         UsersResource usersResource = realmResource.users();
 
         // Create Keycloak user
