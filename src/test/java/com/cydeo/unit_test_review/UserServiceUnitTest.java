@@ -18,17 +18,17 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Comparator;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.ThrowableAssert.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.assertj.core.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.*;
+
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +42,8 @@ public class UserServiceUnitTest {
     private TaskService taskService;
     @Mock
     private KeycloakService keycloakService;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -122,6 +124,35 @@ public class UserServiceUnitTest {
         Throwable throwable = catchThrowable(()->userService.findByUserName("SomeUsername"));
         assertInstanceOf(NoSuchElementException.class, throwable);
         assertEquals("User not found", throwable.getMessage());
+
+      //  assertThrowsExactly(NoSuchElementException.class, ()->userService.findByUserName("SomeUsername"), "User not found");
+    }
+
+    @Test
+    void should_save_user() {
+
+        when(userRepository.save(any())).thenReturn(user);
+
+        UserDTO actualDTO = userService.save(userDTO);
+
+        assertThat(actualDTO).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(userDTO);
+
+        verify(passwordEncoder).encode(anyString());
+    }
+
+    @Test
+    void should_update_user(){
+
+        when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(user);
+
+        when(userRepository.save(any())).thenReturn(user);
+
+        UserDTO actualDTO = userService.update(userDTO);
+
+        verify(passwordEncoder).encode(anyString());
+
+        assertThat(actualDTO).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(userDTO);
+
     }
 
 
