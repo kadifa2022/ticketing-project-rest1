@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class LoggingAspect {
 
-   // Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+   // Logger logger = LoggerFactory.getLogger(LoggingAspect.class);//instead of Logger we are using Slf4j
 
     private String getUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -25,13 +25,11 @@ public class LoggingAspect {
 
 
     @Pointcut("execution(* com.cydeo.controller.ProjectController.*(..)) || execution(* com.cydeo.controller.TaskController.*(..))")
-
     public void anyProjectAndTaskControllerPC(){}
 
 
     @Before("anyProjectAndTaskControllerPC()")
     public void  beforeAnyProjectAndTaskControllerAdvice(JoinPoint joinPoint){
-
         log.info("Before -> Method: {}, User:{}"
                 , joinPoint.getSignature().toShortString()
                 , getUsername());
