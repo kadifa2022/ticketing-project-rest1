@@ -56,7 +56,7 @@ public class UserController {
     @Operation(summary = "Update user")
     public ResponseEntity<ResponseWrapper> updateUsers(@RequestBody UserDTO user){
         userService.update(user);
-        return ResponseEntity.ok((new ResponseWrapper("User is Successfully updated", HttpStatus.OK)));
+        return ResponseEntity.ok(new ResponseWrapper("User is Successfully updated", HttpStatus.OK));
     }
 
     @DeleteMapping("/{username}")
