@@ -112,20 +112,22 @@ public class UserServiceUnitTest {
 
         List<UserDTO> actualList = userService.listAllUsers();
        // assertEquals(expectedList, actualList);
-            //AssertJ test dependency
+            //AssertJ test dependency is coming from another library
         assertThat(actualList).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedList);
-
+        //usingRecursiveComparison() comparing field inside the object, it will tell if they are same
+        //ignoringExpectedNullField from same library  //AssertJ Dependency
     }
     @Test
-    void should_find_user_name(){
+    void should_find_user_by_name(){
         when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(user);
         UserDTO actual = userService.findByUserName("user");
+       // assertEquals(userDTO,actual);
         assertThat(actual).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(userDTO);
-
+        //fields and value inside the object should be equals in my userDto->and ignoring null fields
     }
 
     @Test
-    void should_throw_exception_when_user_not_found(){
+    void should_throw_exception_when_user_not_found(){ //can be done in 2 different way
 
         Throwable throwable = catchThrowable(()->userService.findByUserName("SomeUsername"));
         assertInstanceOf(NoSuchElementException.class, throwable);
@@ -246,6 +248,8 @@ public class UserServiceUnitTest {
 
 
     }
+
+
 
 
 
