@@ -205,9 +205,9 @@ public class UserServiceUnitTest {
 
         when(projectService.listAllNonCompletedByAssignedManager(any())).thenReturn(List.of(new ProjectDTO(), new ProjectDTO()));
 
-        Throwable throwable = catchThrowable(()->userService.delete(userDTO.getUserName()));
+        Throwable throwable = catchThrowable(()->userService.delete(userDTO.getUserName()));//to catch exception
 
-        assertInstanceOf(TicketingProjectException.class, throwable);
+        assertInstanceOf(TicketingProjectException.class, throwable);//used ticketingProjectException
         assertEquals("User can not be deleted", throwable.getMessage());
 
         verify(userMapper, atLeastOnce()).convertToDto(any());
@@ -257,6 +257,8 @@ public class UserServiceUnitTest {
 
     private User getUser(String role){
         User user3 = new User();
+
+        user3.setUserName("user3");
         user3.setEnabled(false);
         user3.setIsDeleted(false);
         user3.setRole(new Role(role));

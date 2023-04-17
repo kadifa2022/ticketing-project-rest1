@@ -28,15 +28,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc// for integration testing
 class ProjectControllerTest {
 
     @Autowired
-    private MockMvc mvc;
+    private MockMvc mvc;//
 
     static String token;
 
-    static UserDTO manager;
+    static UserDTO manager;// creating variable beforeAll(creating sample data) methode and fields needs to be static
     static ProjectDTO  project;
 
     @BeforeAll
@@ -45,6 +45,9 @@ class ProjectControllerTest {
         token = "Bearer " + getToken();
        // token = "Bearer " + "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjMEl6ZkNaR2lGVlM1cFdyTExaY2JLWU94Njl2VlVjYWpvTGdKZ3RwX2FnIn0.eyJleHAiOjE2NzE0NjMzMjcsImlhdCI6MTY3MTQ2MzAyNywianRpIjoiOTJiMGRhOTMtNWVhMi00MTI2LWFlNWQtYjUxZTc3ZWQzYWE4IiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwL2F1dGgvcmVhbG1zL2N5ZGVvLWRldiIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiIwNmY3NDE2Ny1iMmU4LTQzMzctOTg2NC00NTA3Zjk5YjkwMmUiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0aWNrZXRpbmctYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjdlMjUxMWE0LTFkZjctNGU3ZS04OWIxLTZkNzk3NjBmNjYwNCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo4MDgxIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsImRlZmF1bHQtcm9sZXMtY3lkZW8tZGV2IiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJ0aWNrZXRpbmctYXBwIjp7InJvbGVzIjpbIk1hbmFnZXIiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiI3ZTI1MTFhNC0xZGY3LTRlN2UtODliMS02ZDc5NzYwZjY2MDQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicHJlZmVycmVkX3VzZXJuYW1lIjoib3p6eSJ9.Or41vThLeCjtQR3HapXklmSiIJN3524-jEiooUqyR7W-FIbNXlKGkyPb5w_R64f3PeQLPVsccudopg-oT6sUSizSUZ6zKrc0cUGdUMILNq5s9WgTNBJ2Z8iRgXlchI6tdLr0EOUleawBysCi7KyASpLhIIoa6_LV5suH_Hu__7eVUMwWvCq3fkDfh0Vos28Yz7EyHnex-zDcELdtgIT0RG3Vow9yQ2dzSy1Zz48KYjsbReA73mEjZVqoP7F-PbIpkqapjUBU6YNbTZkhjDewC1IeHS848byjN_LDv_YCmYT-k3c79-k_kXyhwBq8HvR1Lw2VcH1u36KEksEXPrHM0g";
 
+
+
+       //  object created with constructor to use sample data fields are from dto
         manager = new UserDTO(2L,
                 "",
                 "",
@@ -68,15 +71,15 @@ class ProjectControllerTest {
 
     }
 
-    @Test
+    @Test  //first integration test
     void givenNoToken_getProjects() throws Exception {//without token
-        mvc.perform(MockMvcRequestBuilders.get("/api/v1/project"))
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/project"))//end point
                 .andExpect(status().is4xxClientError());
 
     }
 
     @Test
-    void givenToken_getProjects() throws Exception {
+    void givenToken_getProjects() throws Exception { //with token
 
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/project")
                 .header("Authorization", token)
@@ -91,13 +94,15 @@ class ProjectControllerTest {
 
     }
 
+    //Jayway.com github  ->jsonPath ->navigate to json fields
+
     @Test
     void givenToken_createProject() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/api/v1/project")
                 .header("Authorization", token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(toJsonString(project)))
+                .content(toJsonString(project)))//request body
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value("Project is successfully created"));
     }
@@ -105,15 +110,15 @@ class ProjectControllerTest {
     @Test
     void givenToken_updateProject() throws Exception {
 
-        project.setProjectName("API Project-2");
+        project.setProjectName("API Project-2");// update the name
 
         mvc.perform(MockMvcRequestBuilders.put("/api/v1/project")
                 .header("Authorization", token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(toJsonString(project)))
+                .content(toJsonString(project)))//request body after changing names send my project back
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Projects is successfully updated"));
+                .andExpect(jsonPath("$.message").value("Projects is successfully updated"));// verification
 
     }
 
@@ -129,10 +134,10 @@ class ProjectControllerTest {
 
 
 
-    private String toJsonString(final Object obj) throws JsonProcessingException {
+    private String toJsonString(final Object obj) throws JsonProcessingException {//private method JSON
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);//By default, using time and date if is true b ut false only date
+        objectMapper.registerModule(new JavaTimeModule()); // converting 2022,12,18 -> 2022/12/18
         return objectMapper.writeValueAsString(obj);
     }
 
