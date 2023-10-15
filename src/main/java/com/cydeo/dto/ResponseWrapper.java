@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)//if is null don't  show
+@JsonInclude(JsonInclude.Include.NON_NULL)//if is null field don't  show
 public class ResponseWrapper {
 
     private boolean success;
@@ -21,7 +21,7 @@ public class ResponseWrapper {
         this.success = true;
         this.message = message;
         this.code = httpStatus.value();
-        this.data = data;
+        this.data = data;// when we delete this field is Null in Json, that why we  put @JsonInclude.Include.NON_NULL
     }
 
     public ResponseWrapper(String message,HttpStatus httpStatus) {

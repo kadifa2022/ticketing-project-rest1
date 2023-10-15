@@ -75,7 +75,7 @@ public class ProjectController {
     @RolesAllowed("Manager")
     @Operation(summary = "Manager complete project")
     public ResponseEntity<ResponseWrapper> managerCompleteProject(@PathVariable("projectCode")String projectCode){
-        projectService.complete(projectCode);
+        projectService.complete(projectCode);// for complete we are changing the field from OPEN to COMPLETE @PutMapping http method
         return ResponseEntity.ok(new ResponseWrapper("Project is successfully completed", HttpStatus.OK));
     }
 }
