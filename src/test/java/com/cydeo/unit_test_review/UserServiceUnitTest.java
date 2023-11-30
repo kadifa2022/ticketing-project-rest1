@@ -71,7 +71,6 @@ public class UserServiceUnitTest {
         user.setEnabled(true);
         user.setRole(new Role("Manager"));
 
-
         userDTO= new UserDTO();
         userDTO.setId(1L);
         userDTO.setFirstName("John");
@@ -82,11 +81,8 @@ public class UserServiceUnitTest {
 
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setDescription("Manager");
-
         userDTO.setRole(roleDTO);
-
     }
-
     // another way of creating data, we will call if we need them
     private List<User> getUsers(){
         User user2 = new User();
@@ -207,7 +203,10 @@ public class UserServiceUnitTest {
 
         Throwable throwable = catchThrowable(()->userService.delete(userDTO.getUserName()));//to catch exception
 
-        assertInstanceOf(TicketingProjectException.class, throwable);//used ticketingProjectException
+        assertInstanceOf(TicketingProjectException.class, throwable);//used ticketing
+
+
+        // ProjectException
         assertEquals("User can not be deleted", throwable.getMessage());
 
         verify(userMapper, atLeastOnce()).convertToDto(any());

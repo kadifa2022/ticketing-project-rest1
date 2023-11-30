@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findByUserName(String username){
         User user = userRepository.findByUserNameAndIsDeleted(username, false);
-       if(user == null)throw new NoSuchElementException("User not found");
+       if(user == null)throw new NoSuchElementException("User not found");// if we can find the user we put exceptions
         return userMapper.convertToDto(user);
     }
 
