@@ -99,18 +99,18 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    void should_list_all_users(){
+    void should_list_all_users(){ // calling all users methods
         //stub
-        when(userRepository.findAllByIsDeletedOrderByFirstNameDesc(false)).thenReturn(getUsers());
+        when(userRepository.findAllByIsDeletedOrderByFirstNameDesc(false)).thenReturn(getUsers());// will communicate with repo and
         List<UserDTO> expectedList = getUserDTOs();
 
        // expectedList.sort(Comparator.comparing(UserDTO::getUserName).reversed());
 
-        List<UserDTO> actualList = userService.listAllUsers();
-       // assertEquals(expectedList, actualList);
+        List<UserDTO> actualList = userService.listAllUsers(); // need to go to this method and what to mock
+       // assertEquals(expectedList, actualList); not the same object from the  memory (like 2 different objects from memory)
             //AssertJ test dependency is coming from another library
         assertThat(actualList).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedList);
-        //usingRecursiveComparison() comparing field inside the object, it will tell if they are same
+        //usingRecursiveComparison() comparing field inside the object one by one, it will tell if they are same object
         //ignoringExpectedNullField from same library  //AssertJ Dependency
     }
     @Test
