@@ -115,17 +115,24 @@ public class UserServiceUnitTest {
     }
     @Test
     void should_find_user_by_name(){
+        //stub repo,
+       // lenient().when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(user);
         when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(user);
         UserDTO actual = userService.findByUserName("user");
-       // assertEquals(userDTO,actual);
+       // assertEquals(userDTO,actual);// we can't use this one because we want to compare each of the field one by one
         assertThat(actual).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(userDTO);
-        //fields and value inside the object should be equals in my userDto->and ignoring null fields
+        //usingRecursiveComparison()//fields and value inside the object should be
+        // equals in my userDto->and ignoring null fields
     }
 
     @Test
     void should_throw_exception_when_user_not_found(){ //can be done in 2 different way
 
+        //no stub needed, first line will be null and will be assigned to the user field
+        // we are catching exception here, since we didn't stub any user ()-> this code will trigger my exception and return null,
+        // when ever will return null will call exception, and that exception will be saved inside throwable object/ field
         Throwable throwable = catchThrowable(()->userService.findByUserName("SomeUsername"));
+
         assertInstanceOf(NoSuchElementException.class, throwable);
         assertEquals("User not found", throwable.getMessage());
 
@@ -140,13 +147,14 @@ public class UserServiceUnitTest {
     @Test
     void should_save_user() {
 
-        when(userRepository.save(any())).thenReturn(user);
+        when(userRepository.save(any())).thenReturn(user); // provided entity
 
-        UserDTO actualDTO = userService.save(userDTO);
+        UserDTO actualDTO = userService.save(userDTO); // converted to userDTO and save is to actualUserDTO
 
         assertThat(actualDTO).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(userDTO);
-
-        verify(passwordEncoder).encode(anyString());
+        // i just want to verify when this method is triggered
+        verify(keycloakService, atLeastOnce()).userCreate(any());
+        verify(passwordEncoder).encode(anyString()); // to make sure keycloak
     }
 
     @Test

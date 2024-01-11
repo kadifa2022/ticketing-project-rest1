@@ -54,16 +54,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO save(UserDTO user) {
 
-        user.setEnabled(true);
+        user.setEnabled(true); // is gonna take our userDTO and set the value to true we don't need to stub
         user.setPassWord(passwordEncoder.encode(user.getPassWord()));
 
-        User obj = userMapper.convertToEntity(user);
+        User obj = userMapper.convertToEntity(user);// if we don't have mapper with @Spy (userMapper) we will
+        // need to stub this one, but since we have userMapper they will take userDTO and  convert to user entity
 
-        User savedUser = userRepository.save(obj);
+        User savedUser = userRepository.save(obj);// which is taking my entity and returning the entity/
+        // then we need to stub this method
 
-        keycloakService.userCreate(user);     //after saving in db saved in keycloak
-
-        return userMapper.convertToDto(savedUser);
+        keycloakService.userCreate(user); // don't need to stub keyckloak because is not returning anything  //after saving in db saved in keycloak
+        return userMapper.convertToDto(savedUser);// re convert to DTO
 
     }
 
