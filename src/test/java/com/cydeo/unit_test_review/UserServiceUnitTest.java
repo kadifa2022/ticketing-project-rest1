@@ -62,7 +62,7 @@ public class UserServiceUnitTest {
 
     @BeforeEach
     void setUp(){
-        user = new User();
+        user = new User(); // these fields are for individual user
         user.setId(1L);
         user.setFirstName("John");
         user.setLastName("Doe");
@@ -71,7 +71,7 @@ public class UserServiceUnitTest {
         user.setEnabled(true);
         user.setRole(new Role("Manager"));
 
-        userDTO= new UserDTO();
+        userDTO= new UserDTO();// these fields are for individual user
         userDTO.setId(1L);
         userDTO.setFirstName("John");
         userDTO.setLastName("Doe");
@@ -84,14 +84,14 @@ public class UserServiceUnitTest {
         userDTO.setRole(roleDTO);
     }
     // another way of creating data, we will call if we need them
-    private List<User> getUsers(){
+    private List<User> getUsers(){  // private method whatever we need to use inside classList of users
         User user2 = new User();
         user2.setId(2L);
         user2.setFirstName("Emily");
         return List.of(user, user2);
     }
 
-    private List<UserDTO> getUserDTOs(){
+    private List<UserDTO> getUserDTOs(){// // private method whatever we need to use inside classList of users
         UserDTO userDTO2 = new UserDTO();
         userDTO2.setId(2L);
         userDTO2.setFirstName("Emily");
@@ -100,18 +100,19 @@ public class UserServiceUnitTest {
 
     @Test
     void should_list_all_users(){ // calling all users methods
-        //stub
-        when(userRepository.findAllByIsDeletedOrderByFirstNameDesc(false)).thenReturn(getUsers());// will communicate with repo and
+        //stub    // will communicate with repository  and will find list of user and then will return userList
+        //stubbing is only required when is return  inside the flow
+        when(userRepository.findAllByIsDeletedOrderByFirstNameDesc(false)).thenReturn(getUsers());
         List<UserDTO> expectedList = getUserDTOs();
 
        // expectedList.sort(Comparator.comparing(UserDTO::getUserName).reversed());
 
         List<UserDTO> actualList = userService.listAllUsers(); // need to go to this method and what to mock
        // assertEquals(expectedList, actualList); not the same object from the  memory (like 2 different objects from memory)
-            //AssertJ test dependency is coming from another library
+            //AssertJ test dependency is coming from another library and is checking value
         assertThat(actualList).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(expectedList);
-        //usingRecursiveComparison() comparing field inside the object one by one, it will tell if they are same object
-        //ignoringExpectedNullField from same library  //AssertJ Dependency
+        //usingRecursiveComparison() comparing each value field inside the object one by one, it will tell if they are same object
+        //ignoringExpectedNullField from same library  //AssertJ Coming with spring testDependency
     }
     @Test
     void should_find_user_by_name(){
